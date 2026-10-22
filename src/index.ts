@@ -1,0 +1,8 @@
+export { Bitinz, BitinzError, sniffFormat, VERSION, DEFAULT_BASE_URL } from './client.js'
+export type { ClientOptions, CompressOptions, CompressResult, ImageFormat, Level, Note, OutputFormat } from './client.js'
+export { compressFiles } from './batch.js'
+export type { BatchOptions, BatchReport, FileReport, FileStatus } from './batch.js'
+export { collectImages, planOutputs, isImage, IMAGE_EXTENSIONS, OUTPUT_DIR } from './files.js'
+export type { Collected, ImageFile, PlanOptions } from './files.js'
+export { describeNotes, formatBytes, savedPercent } from './format.js'
+export { resolveSettings, configPath } from './config.js'
