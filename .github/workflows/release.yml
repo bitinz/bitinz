@@ -1,5 +1,7 @@
 # Publishes to npm when a version tag is pushed, through npm trusted
 # publishing: no token is stored, and the package carries provenance.
+# A version that is already on npm (1.0.0 was published by hand, before
+# trusted publishing could be set up) is tested but not published again.
 name: Release
 on:
   push:
@@ -20,6 +22,15 @@ jobs:
       - run: npm install --global npm@latest
       - name: The tag matches package.json
         run: test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
+      - name: Skip a version that is already on npm
+        id: npm
+        run: |
+          version=$(node -p 'require("./package.json").version')
+          if curl -fs -o /dev/null "https://registry.npmjs.org/bitinz/$version"; then
+            echo "bitinz@$version is already on npm: it is tested but not published again."
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          fi
       - run: npm ci
       - run: npm test
-      - run: npm publish --access public
+      - if: steps.npm.outputs.published != 'true'
+        run: npm publish --access public
